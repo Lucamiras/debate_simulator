@@ -1,41 +1,18 @@
 import streamlit as st
 from src.functions import load_model, initialize_debate_dictionary, summarize_arguments, opening_arguments, debate, generate_loading_statements
+from src.prompts import load_prompts
 
+# Load language model
 llm = load_model("llama3")
 
-debater_one_start_prompt = """
-    You are a debater having a {style} debate. The topic of the debate is: {topic}. You will go first.
-    Please provide a starting argument in {side} of the topic. Keep it short and simple. Be {style}.
-"""
+# Load prompts
+debater_one_start_prompt, debater_two_start_prompt, summarize_prompt, debater_one_follow_up_prompt, host_end_prompt = load_prompts()
 
-debater_two_start_prompt = """
-    You are a debater having a {style}. The topic of the debate is: {topic}. You will go second. 
-    Please provide a starting argument in {side} of the topic. Keep it short and simple. Be {style}.
-"""
-
-summarize_prompt = """
-    You are summarizing arguments from a debate. The topic of the debate is: {topic}. You just heard the following argument: {argument}.
-    Please summarize the argument in one sentence. Return only the sentence.
-"""
-
-debater_one_follow_up_prompt = """
-    You are still a debater having a {style} debate. The topic of the debate is still {topic}. The previous debater so far argued the following: {counter_args}.
-    You already made the following points: {history}.
-    Please provide a follow-up argument in {side} of the topic. Keep it short and simple.
-    Be {style}.
-"""
-
-host_end_prompt = """
-    You are the host of the debate. Please look at these python lists of arguments that were made in the debate about the following topic: {topic}.
-    Arguments in favor of the position: {arguments_pro}.
-    Arguments against the position: {arguments_con}.
-    Please summarize each position in one paragraph, thank the audience and end the debate.
-    Also declare a winner and explain which argument convinced you.
-"""
-
-# User interface
+# Construct user interface
 st.header("Drama Llama Debate Bot")
 user_input_debate_topic = st.text_input("Enter the topic of the debate: ")
+debate_dictionary = initialize_debate_dictionary(user_input_debate_topic)
+
 col1, col2 = st.columns(2)
 
 with col1:
@@ -44,15 +21,13 @@ with col1:
 with col2:
     user_input_number_of_rounds = int(st.number_input("Enter the number of rounds: ", max_value=10, min_value=1, value=3))
 
-# Initialize dictionary to store debate arguments
-debate_dictionary = initialize_debate_dictionary(user_input_debate_topic)
-
 # Sidebar to display arguments
 pro_header = st.sidebar.subheader("Pro arguments:")
 pro_placeholder = st.sidebar.empty()
 con_header = st.sidebar.subheader("Con arguments:")
 con_placeholder = st.sidebar.empty()
 
+# Main debate stage
 if st.button("Start debate") and user_input_debate_topic and user_input_style:
     
     with st.spinner("Thinking about my opening statement ..."):
