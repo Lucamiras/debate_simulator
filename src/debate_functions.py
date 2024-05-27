@@ -64,9 +64,13 @@ def summarize_arguments(llm: Ollama,
     
 def opening_arguments(llm: Ollama, 
                       topic: str, 
-                      debate_prompt: str, 
+                      debate_prompt: str,
+                      summary_prompt: str,
+                      debate_dictionary: dict,
                       side: str, 
-                      style: str) -> tuple:
+                      style: str,
+                      pro_placeholder,
+                      con_placeholder) -> tuple:
     """Generate opening arguments for a debate.
 
     This function takes in various parameters and generates opening arguments for a debate based on the given topic,
@@ -83,7 +87,7 @@ def opening_arguments(llm: Ollama,
         tuple: A tuple containing the subheader indicating the debater's side and the generated opening arguments.
     """
     arg = llm(debate_prompt.format(topic=topic, side=side, style=style))
-    summarize_arguments(arg, side)
+    summarize_arguments(llm, topic, summary_prompt, arg, side, debate_dictionary, pro_placeholder, con_placeholder)
     return (
         st.subheader(f"Debater {side} starts:"),
         st.write(arg)
@@ -91,11 +95,15 @@ def opening_arguments(llm: Ollama,
 
 def debate(llm: Ollama, 
            topic: str, 
-           debate_prompt: str, 
+           debate_prompt: str,
+           summary_prompt: str,
+           debate_dictionary: dict,
            last_summary: str, 
            history: str, 
            side: str, 
-           style: str) -> tuple:
+           style: str,
+           pro_placeholder,
+           con_placeholder) -> tuple:
     """Simulates a debate between two sides.
 
     Args:
@@ -111,7 +119,7 @@ def debate(llm: Ollama,
         tuple: A tuple containing the subheader and the generated response.
     """
     arg = llm(debate_prompt.format(topic=topic, counter_args=last_summary, history=history, side=side, style=style))
-    summarize_arguments(arg, side)
+    summarize_arguments(llm, topic, summary_prompt, arg, side, debate_dictionary, pro_placeholder, con_placeholder)
     return (
         st.subheader(f"Debater {side} responds:"),
         st.write(arg)

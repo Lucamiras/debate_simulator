@@ -1,5 +1,5 @@
 import streamlit as st
-from src.functions import load_model, initialize_debate_dictionary, summarize_arguments, opening_arguments, debate, generate_loading_statements
+from src.debate_functions import load_model, initialize_debate_dictionary, summarize_arguments, opening_arguments, debate, generate_loading_statements
 from src.prompts import load_prompts
 
 # Load language model
@@ -31,27 +31,23 @@ con_placeholder = st.sidebar.empty()
 if st.button("Start debate") and user_input_debate_topic and user_input_style:
     
     with st.spinner("Thinking about my opening statement ..."):
-        opening_arguments(llm, user_input_debate_topic, debater_one_start_prompt, "favor", user_input_style)
+        opening_arguments(llm, user_input_debate_topic, debater_one_start_prompt, summarize_prompt, debate_dictionary, "favor", user_input_style, pro_placeholder, con_placeholder)
     
     with st.spinner("Preparing my opening remarks ..."):
-        opening_arguments(llm, user_input_style, debater_two_start_prompt, "opposition", user_input_style)
+        opening_arguments(llm, user_input_debate_topic, debater_two_start_prompt, summarize_prompt, debate_dictionary, "opposition", user_input_style, pro_placeholder, con_placeholder)
     
     for i in range(user_input_number_of_rounds):
 
         with st.spinner(generate_loading_statements()):
-            debate(llm, user_input_debate_topic, debater_one_follow_up_prompt, debate_dictionary["opposition"], debate_dictionary["favor"], "favor", style=user_input_style)
-            st.text(debate_dictionary)
+            debate(llm, user_input_debate_topic, debater_one_follow_up_prompt, summarize_prompt, debate_dictionary, debate_dictionary["opposition"], debate_dictionary["favor"], "favor", user_input_style, pro_placeholder, con_placeholder)        
         
         with st.spinner(generate_loading_statements()):
-            debate(llm, user_input_debate_topic, debater_one_follow_up_prompt, debate_dictionary["favor"], debate_dictionary["opposition"], "opposition", style=user_input_style)
-            st.text(debate_dictionary)
-
-    st.write(debate_dictionary)
+            debate(llm, user_input_debate_topic, debater_one_follow_up_prompt, summarize_prompt, debate_dictionary, debate_dictionary["favor"], debate_dictionary["opposition"], "opposition", user_input_style, pro_placeholder, con_placeholder)
 
     with st.spinner("Wrapping up the debate ..."):
         st.header("Host summary:")
         final_statement = llm(host_end_prompt.format(
-            topic=user_input_debate_topic, 
-            arguments_pro=debate_dictionary["favor"], 
+            topic=user_input_debate_topic,
+            arguments_pro=debate_dictionary["favor"],
             arguments_con=debate_dictionary["opposition"]))
         st.write(final_statement)

@@ -1,12 +1,20 @@
 def load_prompts():
     debater_one_start_prompt = """
-        You are a debater having a {style} debate. The topic of the debate is: {topic}. You will go first.
-        Please provide a starting argument in {side} of the topic. Keep it short and simple. Be {style}.
+        You are a debater having a {style} debate. 
+        The topic of the debate is: {topic}. You will go first.
+        Please provide a starting argument in {side} of the topic. 
+        Keep it short and simple. 
+        Do not add stage directions. This is a dialogue.
+        Be {style}.
     """
 
     debater_two_start_prompt = """
-        You are a debater having a {style}. The topic of the debate is: {topic}. You will go second. 
-        Please provide a starting argument in {side} of the topic. Keep it short and simple. Be {style}.
+        You are a debater having a {style} debate. 
+        The topic of the debate is: {topic}. You will go second. 
+        Please provide a starting argument in {side} of the topic. 
+        Keep it short and simple. 
+        Do not add stage directions. This is a dialogue.
+        Be {style}.
     """
 
     summarize_prompt = """
@@ -15,9 +23,12 @@ def load_prompts():
     """
 
     debater_one_follow_up_prompt = """
-        You are still a debater having a {style} debate. The topic of the debate is still {topic}. The previous debater so far argued the following: {counter_args}.
+        You are still a debater having a {style} debate. 
+        The topic of the debate is still {topic}. 
+        The previous debater so far argued the following: {counter_args}.
         You already made the following points: {history}.
         Please provide a follow-up argument in {side} of the topic. Keep it short and simple.
+        Do not add stage directions. This is a dialogue.
         Be {style}.
     """
 
