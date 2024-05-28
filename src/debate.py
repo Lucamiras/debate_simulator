@@ -10,6 +10,8 @@ class Debate:
         self.number_of_rounds = number_of_rounds
         self.prompts = self.load_prompts()
         self.debate_dictionary = self.initialize_debate_dictionary(topic)
+        self.full_transcript = {}
+        self.arg_counter = [1, 1]
 
     def load_model(self, model) -> Ollama:
         """
@@ -147,6 +149,7 @@ class Debate:
             debate_prompt = self.prompts["debater_two_start_prompt"]
 
         arg = self.llm(debate_prompt.format(topic=self.topic, side=side, style=self.style))
+        self.full_transcript["opening_arguments_" + side] = arg
         self.summarize_arguments(arg, side, pro_placeholder, con_placeholder)
         return (
             st.subheader(f"Debater in {side} starts:"),
@@ -175,12 +178,17 @@ class Debate:
             debate_prompt = self.prompts["debater_follow_up_prompt"]
             last_summary = self.debate_dictionary["opposition"]
             history = self.debate_dictionary["favor"]
+            counter = self.arg_counter[0]
+            self.arg_counter[0] += 1
         if side == "opposition":
             debate_prompt = self.prompts["debater_follow_up_prompt"]
             last_summary = self.debate_dictionary["favor"]
             history = self.debate_dictionary["opposition"]
+            counter = self.arg_counter[1]
+            self.arg_counter[1] += 1
 
         arg = self.llm(debate_prompt.format(topic=self.topic, counter_args=last_summary, history=history, side=side, style=self.style))
+        self.full_transcript["argument_" + side + '_' + str(counter)] = arg
         self.summarize_arguments(arg, side, pro_placeholder, con_placeholder)
         return (
             st.subheader(f"Debater {side} responds:"),
