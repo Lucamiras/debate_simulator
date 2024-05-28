@@ -39,4 +39,13 @@ def load_prompts():
         Please summarize each position in one paragraph, thank the audience and end the debate.
         Also declare a winner and explain which argument convinced you.
     """
-    return debater_one_start_prompt, debater_two_start_prompt, summarize_prompt, debater_one_follow_up_prompt, host_end_prompt
+    
+    prompt_dictionary = {
+        "debater_one_start_prompt": debater_one_start_prompt,
+        "debater_two_start_prompt": debater_two_start_prompt,
+        "summarize_prompt": summarize_prompt,
+        "debater_one_follow_up_prompt": debater_one_follow_up_prompt,
+        "host_end_prompt": host_end_prompt
+    }
+
+    return prompt_dictionary
