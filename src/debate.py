@@ -3,10 +3,11 @@ import streamlit as st
 from langchain_community.llms import Ollama
 
 class Debate:
-    def __init__(self, model, topic, style):
+    def __init__(self, model, topic, style, number_of_rounds):
         self.llm = self.load_model(model)
         self.topic = topic
         self.style = style
+        self.number_of_rounds = number_of_rounds
         self.prompts = self.load_prompts()
         self.debate_dictionary = self.initialize_debate_dictionary(topic)
 
