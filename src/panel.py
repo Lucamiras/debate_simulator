@@ -1,6 +1,5 @@
 import numpy as np
 from langchain_community.llms import Ollama
-from debate import Debate
 import streamlit as st
 
 class Panel:
@@ -45,7 +44,7 @@ class Panel:
         
         return judges
     
-    def get_judgement(self, debate: Debate, container: st.container) -> None:
+    def get_judgement(self, debate, container: st.container) -> None:
         """Get the judgement of each judge for the given debate.
 
         Args:
