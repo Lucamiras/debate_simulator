@@ -16,7 +16,7 @@ debate_stage = st.container(border = False)
 sidebar = st.sidebar
 
 ## Input form
-form.header("Drama Llama Debate Bot")
+form.header("Drama Llama Debate Simulator")
 user_input_debate_topic = form.text_input("Enter the topic of the debate: ")
 col1, col2 = form.columns(2)
 
