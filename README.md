@@ -33,10 +33,10 @@ streamlit run main.py
 - **Rounds**: Each debate begins with opening statements, after which the debate continues for n rounds.
 - **Host summary**: After n rounds have been completed, a virtual host summarizes the debate and chooses a winner.
 - **Debate summary sidebar**: On the left-hand side, each debate is summarized for easy skimming.
+- **Panel vote**: A panel of 5 judges with randomly selected political leanings will vote on the motion after the debate ends, declaring a winner.
 
 # Work in progress ...
 This project is being developed on an ongoing basis. Features to include in the future:
 - Text-to-speech
 - Q&A with debaters
-- Panel of judges
 - Custom personalities and names for debaters
