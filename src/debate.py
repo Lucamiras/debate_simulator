@@ -66,11 +66,11 @@ class Debate:
         """
 
         host_end_prompt = """
-            You are the host of the debate. Please look at these python lists of arguments that were made in the debate about the following topic: {topic}.
+            You are the host of the debate. The topic was: {topic}.
             Arguments in favor of the position: {arguments_pro}.
             Arguments against the position: {arguments_con}.
-            Please summarize each position in one paragraph, thank the audience and end the debate.
-            Also declare a winner and explain which argument convinced you.
+            This is how the panel voted: {panel_decision}
+            Please wrap up the debate by summarizing both sides' arguments and declare the winner in bold based on the panel decision.
         """
         
         prompt_dictionary = {
@@ -206,13 +206,14 @@ class Debate:
             st.write(arg)
         )
     
-    def wrap_up(self) -> str:
+    def wrap_up(self, panel_decision) -> str:
         """Wrap up the debate and return a summary.
 
         Returns:
             str: A summary of the debate, including the topic, arguments in favor, and arguments in opposition.
         """
         final_statement = self.llm(self.prompts["host_end_prompt"].format(topic=self.topic,
+                                                                          panel_decision=panel_decision,
                                                                           arguments_pro=self.debate_dictionary["favor"],
                                                                           arguments_con=self.debate_dictionary["opposition"]))    
         return (
