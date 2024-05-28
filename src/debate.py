@@ -9,8 +9,8 @@ class Debate:
         self.style = style
         self.number_of_rounds = number_of_rounds
         self.prompts = self.load_prompts()
-        self.debate_dictionary = self.initialize_debate_dictionary(topic)
-        self.full_transcript = {}
+        self.debate_dictionary = self.initialize_debate_dictionaries(topic)[0]
+        self.full_transcript = self.initialize_debate_dictionaries(topic)[1]
         self.arg_counter = [1, 1]
 
     def load_model(self, model) -> Ollama:
@@ -49,6 +49,12 @@ class Debate:
             Please summarize the argument in one sentence. Return only the sentence.
         """
 
+        summarize_into_bullet_list = """
+            Please summarize this paragraph's main points as brief bullet points: {paragraph}.
+            Return the bullet points as markdown unordered lists. Each bullet needs to be written in a new line.
+            Do not add anything before or after.
+        """
+
         debater_follow_up_prompt = """
             You are still a debater having a {style} debate. 
             The topic of the debate is still {topic}. 
@@ -71,13 +77,14 @@ class Debate:
             "debater_one_start_prompt": debater_one_start_prompt,
             "debater_two_start_prompt": debater_two_start_prompt,
             "summarize_prompt": summarize_prompt,
+            "summarize_into_bullet_list": summarize_into_bullet_list,
             "debater_follow_up_prompt": debater_follow_up_prompt,
             "host_end_prompt": host_end_prompt
         }
 
         return prompt_dictionary
 
-    def initialize_debate_dictionary(self, topic: str) -> dict:
+    def initialize_debate_dictionaries(self, topic: str) -> dict:
         """Initialize a debate dictionary with the given topic.
 
         Args:
@@ -94,7 +101,11 @@ class Debate:
             "favor": "",
             "opposition": ""
         }
-        return debate_dictionary
+        transcript_dictionary = {
+            "topic": topic,
+            "number_of_rounds": self.number_of_rounds,
+        }
+        return debate_dictionary, transcript_dictionary
 
     def summarize_arguments(self, 
                             argument: str, 
@@ -209,6 +220,32 @@ class Debate:
             st.write(final_statement)
         )
     
+    def bullet_points(self, container: st.container) -> str:
+        """Generate bullet points for pro and con arguments.
+
+        Args:
+            container (st.container): The container to display the bullet points.
+
+        Returns:
+            str: The generated bullet points as a string.
+        """
+        pro_bullets = self.llm(self.prompts["summarize_into_bullet_list"].format(paragraph=self.debate_dictionary["favor"]))
+        con_bullets = self.llm(self.prompts["summarize_into_bullet_list"].format(paragraph=self.debate_dictionary["opposition"]))
+
+        container.subheader("Pro bullets")
+        container.markdown(pro_bullets)
+        container.subheader("Con bullets")
+        container.markdown(con_bullets)
     
+    def add_full_transcript_to_sidebar(self, container: st.container) -> None:
+            """Add the full transcript to the sidebar container.
+
+            This method clears the container and writes the full transcript to it.
+
+            Args:
+                container (st.container): The container to which the full transcript will be added.
+            """
+            container.empty()
+            container.write(self.full_transcript)
     
     
