@@ -110,19 +110,16 @@ class Judge:
 
         """
         prompt = """
-            You are a judge in a debate. \n
-            The debate topic is: {debate_topic} \n
-            Your personality is {personality}. This personality should influence your decision. \n
-            Arguments in favor: {favor_arguments} \n
-            Arguments in opposition: {opposition_arguments} \n
-            Decide a winner. \n
+            You are a judge in a debate. The debate topic is: {debate_topic}.
+            Your personality is {personality}. This personality should strongly influence your decision.
+            Decide a winner between the pro and con side.
             Respond in the following format: ONE sentence describing your position and if you vote for or against the resolution. \n
             DO NOT add any other information.
             """
         
-        decision = self.llm(prompt.format(personality=self.personality,
-                                          debate_topic=debate_topic,
-                                          favor_arguments=favor_arguments,
-                                          opposition_arguments=opposition_arguments))
+        decision = self.llm(prompt.format(personality = self.personality,
+                                          debate_topic = debate_topic,
+                                          favor_arguments = favor_arguments,
+                                          opposition_arguments = opposition_arguments))
 
         return decision
