@@ -2,7 +2,7 @@ import streamlit as st
 from src.debate import Debate
 from src.utils import generate_loading_statements
 
-# Construct user interface
+# Input interface
 st.header("Drama Llama Debate Bot")
 user_input_debate_topic = st.text_input("Enter the topic of the debate: ")
 col1, col2 = st.columns(2)
@@ -13,6 +13,9 @@ with col1:
 with col2:
     user_input_number_of_rounds = int(st.number_input("Enter the number of rounds: ", max_value=10, min_value=1, value=3))
 
+start_button = st.button("Start debate")
+divider = st.divider()
+
 # Sidebar to display arguments
 pro_header = st.sidebar.subheader("Pro arguments:")
 pro_placeholder = st.sidebar.empty()
@@ -20,7 +23,7 @@ con_header = st.sidebar.subheader("Con arguments:")
 con_placeholder = st.sidebar.empty()
 
 # Main debate stage
-if st.button("Start debate") and user_input_debate_topic and user_input_style:
+if start_button and user_input_debate_topic and user_input_style:
 
     # Initialize debate class
     Debate = Debate("llama3", user_input_debate_topic, user_input_style)
@@ -39,13 +42,8 @@ if st.button("Start debate") and user_input_debate_topic and user_input_style:
         
         with st.spinner(generate_loading_statements()):
             Debate.debate("opposition", pro_placeholder, con_placeholder)
-
+    
     with st.spinner("Wrapping up the debate ..."):
-        st.header("Host summary:")
-        final_statement = Debate.llm(Debate.prompts["host_end_prompt"].format(
-            topic=user_input_debate_topic,
-            arguments_pro = Debate.debate_dictionary["favor"],
-            arguments_con = Debate.debate_dictionary["opposition"]))
-        st.write(final_statement)
+        Debate.wrap_up()
 
 

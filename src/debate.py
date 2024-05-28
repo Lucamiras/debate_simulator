@@ -148,7 +148,7 @@ class Debate:
         arg = self.llm(debate_prompt.format(topic=self.topic, side=side, style=self.style))
         self.summarize_arguments(arg, side, pro_placeholder, con_placeholder)
         return (
-            st.subheader(f"Debater {side} starts:"),
+            st.subheader(f"Debater in {side} starts:"),
             st.write(arg)
         )
 
@@ -185,3 +185,21 @@ class Debate:
             st.subheader(f"Debater {side} responds:"),
             st.write(arg)
         )
+    
+    def wrap_up(self) -> str:
+        """Wrap up the debate and return a summary.
+
+        Returns:
+            str: A summary of the debate, including the topic, arguments in favor, and arguments in opposition.
+        """
+        final_statement = self.llm(self.prompts["host_end_prompt"].format(topic=self.topic,
+                                                                          arguments_pro=self.debate_dictionary["favor"],
+                                                                          arguments_con=self.debate_dictionary["opposition"]))    
+        return (
+            st.header("Host summary:"),
+            st.write(final_statement)
+        )
+    
+    
+    
+    
