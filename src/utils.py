@@ -1,4 +1,6 @@
 
+import numpy as np
+
 def generate_loading_statements(custom_loading_texts: list = None) -> str:
     """Generate a random loading statement.
 
