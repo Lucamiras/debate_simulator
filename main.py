@@ -1,6 +1,6 @@
 import streamlit as st
 from src.debate import Debate
-from src.judges import Panel, Judge
+from src.panel import Panel, Judge
 from src.utils import generate_loading_statements
 
 # Variables
@@ -39,8 +39,9 @@ with sidebar:
     con_placeholder = key_points.markdown("*Waiting for debate to start*")
     bullet_placeholder = key_points.container()
 
-    with panel:
-        panel_decision_placeholder = st.container()
+with panel:
+    panel_decision_placeholder = st.container()
+    panel_decision_placeholder.write("Panel will vote once the debate is over.")
 
 ## Main debate stage
 if start_button and user_input_debate_topic and user_input_style:
